@@ -15,8 +15,14 @@ export class App extends Component {
       this.setState({ contacts: JSON.parse(contacts) });
     }
   }
+  componentDidUpdate(prevProps, prevState) {
+    const { contacts } = this.state;
+    if (contacts !== prevState.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(contacts));
+    }
+  }
 
-  onFormSubmite = async newContact => {
+  onFormSubmite = newContact => {
     const { contacts } = this.state;
     if (
       contacts.find(
@@ -26,10 +32,9 @@ export class App extends Component {
       alert('This contact already added');
       return;
     }
-    await this.setState(prev => {
+    this.setState(prev => {
       return { contacts: [...prev.contacts, newContact], name: '' };
     });
-    localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
   };
 
   onFilterChange = e => {
